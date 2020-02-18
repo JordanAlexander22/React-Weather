@@ -110,6 +110,7 @@ class App extends React.Component {
           description={this.state.description}
           weatherIcon={this.state.icon}
         />
+  
       </div>
     );
   }
