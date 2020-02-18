@@ -23,14 +23,51 @@ class App extends React.Component {
       error: false
     };
     this.fetchWeather();
+
+    this.weatherIcon = {
+      Thunderstorm: "wi-thunderstorm",
+      Drizzle: "wi-sleet",
+      Rain: "wi-storm-showers",
+      Snow: "wi-snow",
+      Atmosphere: "wi-fog",
+      Clear: "wi-day-sunny",
+      Clouds: "wi-day-fog"
+    };
   }
-// creating a function to convert weather to celsius
+  // creating a function to convert weather to celsius
 
-calCelsius(temp){
-  let cel = Math.floor(temp-273.15)
-  return cel;
-}
+  calCelsius(temp) {
+    let cel = Math.floor(temp - 273.15);
+    return cel;
+  }
 
+  get_WeatherIcon(icons, rangeID){
+    switch(true){
+      case rangeID>= 200 && rangeID<=232:
+        this.setState({icon:this.weatherIcon.Thunderstorm})
+        break;
+        case rangeID>= 300 && rangeID<=321:
+        this.setState({icon:this.weatherIcon.Drizzle})
+        break;
+        case rangeID>= 500 && rangeID<=531:
+        this.setState({icon:this.weatherIcon.Rain})
+        break;
+        case rangeID>= 600 && rangeID<=622:
+        this.setState({icon:this.weatherIcon.Snow})
+        break;
+        case rangeID>= 701 && rangeID<=781:
+        this.setState({icon:this.weatherIcon.Atmosphere})
+        break;
+        case rangeID===800:
+        this.setState({icon:this.weatherIcon.Clear})
+        break;
+        case rangeID>= 801 && rangeID<=804:
+        this.setState({icon:this.weatherIcon.Clouds})
+        break;
+        default:
+            this.setState({icon:this.weatherIcon.Clouds})
+    }
+  }
 
   fetchWeather = async () => {
     const api_call = await fetch(
@@ -43,8 +80,13 @@ calCelsius(temp){
     this.setState({
       city: response.name,
       country: response.sys.country,
-      celsius: this.calCelsius(response.main.temp)
+      celsius: this.calCelsius(response.main.temp),
+      temp_max: this.calCelsius(response.main.temp_max),
+      temp_min: this.calCelsius(response.main.temp_min),
+      description: response.weather[0].description,
+      
     });
+    this.get_WeatherIcon(this.weatherIcon, response.weather[0].id);
   };
   render() {
     return (
@@ -56,7 +98,7 @@ calCelsius(temp){
           temp_max={this.state.temp_max}
           temp_min={this.state.temp_min}
           description={this.state.description}
-
+          weatherIcon={this.state.icon}
         />
       </div>
     );
