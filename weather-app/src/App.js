@@ -23,7 +23,6 @@ class App extends React.Component {
       description: "",
       error: false
     };
-    this.fetchWeather();
 
     this.weatherIcon = {
       Thunderstorm: "wi-thunderstorm",
@@ -42,57 +41,65 @@ class App extends React.Component {
     return cel;
   }
 
-  get_WeatherIcon(icons, rangeID){
-    switch(true){
-      case rangeID>= 200 && rangeID<=232:
-        this.setState({icon:this.weatherIcon.Thunderstorm})
+  get_WeatherIcon(icons, rangeID) {
+    switch (true) {
+      case rangeID >= 200 && rangeID <= 232:
+        this.setState({ icon: this.weatherIcon.Thunderstorm });
         break;
-        case rangeID>= 300 && rangeID<=321:
-        this.setState({icon:this.weatherIcon.Drizzle})
+      case rangeID >= 300 && rangeID <= 321:
+        this.setState({ icon: this.weatherIcon.Drizzle });
         break;
-        case rangeID>= 500 && rangeID<=531:
-        this.setState({icon:this.weatherIcon.Rain})
+      case rangeID >= 500 && rangeID <= 531:
+        this.setState({ icon: this.weatherIcon.Rain });
         break;
-        case rangeID>= 600 && rangeID<=622:
-        this.setState({icon:this.weatherIcon.Snow})
+      case rangeID >= 600 && rangeID <= 622:
+        this.setState({ icon: this.weatherIcon.Snow });
         break;
-        case rangeID>= 701 && rangeID<=781:
-        this.setState({icon:this.weatherIcon.Atmosphere})
+      case rangeID >= 701 && rangeID <= 781:
+        this.setState({ icon: this.weatherIcon.Atmosphere });
         break;
-        case rangeID===800:
-        this.setState({icon:this.weatherIcon.Clear})
+      case rangeID === 800:
+        this.setState({ icon: this.weatherIcon.Clear });
         break;
-        case rangeID>= 801 && rangeID<=804:
-        this.setState({icon:this.weatherIcon.Clouds})
+      case rangeID >= 801 && rangeID <= 804:
+        this.setState({ icon: this.weatherIcon.Clouds });
         break;
-        default:
-            this.setState({icon:this.weatherIcon.Clouds})
+      default:
+        this.setState({ icon: this.weatherIcon.Clouds });
     }
   }
 
-  fetchWeather = async () => {
-    const api_call = await fetch(
-      `http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=${APIkey}`
-    );
+  fetchWeather = async e => {
+    e.preventDefault();
+    //setting city and country search functionality below
+    const city = e.target.elements.city.value;
+    const country = e.target.elements.country.value;
 
-    const response = await api_call.json(); //puts the response into json format making it easier to render later
-    console.log(response);
+    if (city && country) {
+      const api_call = await fetch(
+        `http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${APIkey}`
+      );
 
-    this.setState({
-      city: response.name,
-      country: response.sys.country,
-      celsius: this.calCelsius(response.main.temp),
-      temp_max: this.calCelsius(response.main.temp_max),
-      temp_min: this.calCelsius(response.main.temp_min),
-      description: response.weather[0].description,
-      
-    });
-    this.get_WeatherIcon(this.weatherIcon, response.weather[0].id);
+      const response = await api_call.json(); //puts the response into json format making it easier to render later
+      console.log(response);
+
+      this.setState({
+        city: response.name,
+        country: response.sys.country,
+        celsius: this.calCelsius(response.main.temp),
+        temp_max: this.calCelsius(response.main.temp_max),
+        temp_min: this.calCelsius(response.main.temp_min),
+        description: response.weather[0].description
+      });
+      this.get_WeatherIcon(this.weatherIcon, response.weather[0].id);
+    } else{
+      this.setState({error:true});
+    }
   };
   render() {
     return (
       <div className="App">
-        <Form/>
+        <Form loadweather={this.fetchWeather} error= {this.state.error} />
         <Weather
           city={this.state.city}
           country={this.state.country}
