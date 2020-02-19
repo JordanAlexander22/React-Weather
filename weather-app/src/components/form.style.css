@@ -17,5 +17,5 @@ form input:focus {
 }
 
 form input::-webkit-input-placeholder {
-  color:darkslategray !important;
+  color: #ffc107 !important;
 }

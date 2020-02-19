@@ -100,6 +100,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <h1 className="title">Check the Weather in Celcius for Over 200 Cities!</h1>
         <Form loadweather={this.fetchWeather} error= {this.state.error} />
         <Weather
           city={this.state.city}
