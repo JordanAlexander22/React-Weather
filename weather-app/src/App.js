@@ -77,7 +77,7 @@ class App extends React.Component {
 
     if (city && country) {
       const api_call = await fetch(
-        `http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${APIkey}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${APIkey}`
       );
 
       const response = await api_call.json(); //puts the response into json format making it easier to render later
